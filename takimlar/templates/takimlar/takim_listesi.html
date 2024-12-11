@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Takımlar</title>
+</head>
+<body>
+    <h1>Takım Listesi</h1>
+    <a href="{% url 'takim_ekle' %}">Yeni Takım Ekle</a>
+    <table>
+        <thead>
+            <tr>
+                <th>İsim</th>
+                <th>Tip</th>
+                <th>İşlemler</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for takim in takimlar %}
+            <tr>
+                <td>{{ takim.isim }}</td>
+                <td>{{ takim.get_takim_tipi_display }}</td>
+                <td>
+                    <a href="{% url 'takim_guncelle' takim.id %}">Güncelle</a>
+                    <a href="{% url 'takim_sil' takim.id %}">Sil</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

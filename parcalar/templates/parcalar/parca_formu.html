@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parça Ekle</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 h-screen flex items-center justify-center">
+
+    <div class="bg-white p-8 rounded-lg shadow-md w-3/4">
+        <h2 class="text-2xl font-semibold text-center text-gray-800 mb-6">Yeni Parça Ekle</h2>
+
+        <form method="post" class="max-w-xl mx-auto bg-white p-6 rounded-lg shadow-md">
+            {% csrf_token %}
+            <div class="mb-4">
+                <label for="isim" class="block text-sm font-medium text-gray-700">Parça İsmi:</label>
+                <input type="text" id="isim" name="isim" value="{{ parca.isim }}" required class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
+            </div>
+
+            <!-- Stok -->
+            <div class="mb-4">
+                <label for="stok" class="block text-sm font-medium text-gray-700">Stok:</label>
+                <input type="number" id="stok" name="stok" value="{{ parca.stok }}" required class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
+            </div>
+
+            <div class="mb-4">
+                <label for="tur" class="block text-sm font-medium text-gray-700">Parça Türü:</label>
+                {% if user.takim.tur == "KANAT" %}
+                    <select id="tur" name="tur" required class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <option value="SOLKANAT">Sol Kanat</option>
+                        <option value="SAGKANAT">Sağ Kanat</option>
+                    </select>
+                {% else %}
+                    <input type="text" id="tur" name="tur" value="{{ user.takim.tur }}" readonly class="mt-1 block w-full px-4 py-2 bg-gray-100 border border-gray-300 rounded-md cursor-not-allowed" />
+                {% endif %}
+            </div>
+
+            <!-- Kategori Seçimi -->
+            <div class="mb-4">
+                <label for="kategori" class="block text-sm font-medium text-gray-700">Kategori:</label>
+                <select id="kategori" name="kategori" required class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <option value="TB2">TB2</option>
+                    <option value="TB3">TB3</option>
+                    <option value="AKINCI">Akıncı</option>
+                    <option value="KIZILELMA">Kızıl Elma</option>
+                </select>
+            </div>
+
+            <!-- Kaydet Butonu -->
+            <div class="text-center">
+                <button type="submit" class="w-full bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500">Kaydet</button>
+            </div>
+        </form>
+    </div>
+
+</body>
+</html>

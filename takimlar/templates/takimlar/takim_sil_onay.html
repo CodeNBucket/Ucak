@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Takım Sil</title>
+</head>
+<body>
+    <h1>{{ takim.isim }} takımını silmek istediğinize emin misiniz?</h1>
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit">Evet, Sil</button>
+        <a href="{% url 'takim_listesi' %}">İptal</a>
+    </form>
+</body>
+</html>

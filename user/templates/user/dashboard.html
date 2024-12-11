@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <script>
+        function toggleTeamMembers() {
+            const modal = document.getElementById('team-members-modal');
+            modal.classList.toggle('hidden');
+        }
+    </script>
+</head>
+<body class="bg-gray-100 h-screen flex items-center justify-center">
+    <div class="bg-white p-8 rounded-lg shadow-md w-3/4">
+        
+
+        <h1 class="text-3xl font-semibold mb-6 text-center text-gray-800">Hoş geldiniz, {{ user.username }}</h1>
+        <p class="text-lg mb-8 text-center text-gray-600">Takımınız: {{ user.takim.isim }}</p>
+
+        
+        <div id="team-members-modal" class="fixed inset-0 bg-gray-800 bg-opacity-50 hidden flex items-center justify-center z-50">
+            <div class="bg-white w-1/2 max-h-3/4 overflow-y-auto p-6 rounded-lg shadow-lg">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-xl font-medium text-gray-700">Team Members</h3>
+                    <button onclick="toggleTeamMembers()" class="text-gray-500 hover:text-gray-800 focus:outline-none">
+                        &times; <!-- Close Button -->
+                    </button>
+                </div>
+                <ul class="space-y-2">
+                    {% for member in takim_uyeleri %}
+                        <li class="text-gray-600">{{ member.username }}</li>
+                    {% empty %}
+                        <li class="text-gray-600">No members found.</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+
+        <!-- Kendi takımına ait parçalar -->
+        {% if can_edit_parts %}
+        <div class="mb-6">
+            <h2 class="text-xl font-medium mb-4 text-gray-700">Kendi Takımınızın Parçaları</h2>
+            <table class="min-w-full bg-white border border-gray-200">
+                <thead>
+                    <tr>
+                        <th class="py-2 px-4 border-b text-left">Parça Adı</th>
+                        <th class="py-2 px-4 border-b text-left">Parça Kategorisi-Parça Türü</th>
+                        <th class="py-2 px-4 border-b text-left">Stok</th>
+                        <th class="py-2 px-4 border-b text-left">İşlemler</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for parca in parcalar %}
+                        <tr>
+                            <td class="py-2 px-4 border-b">{{ parca.isim }}</td> <!-- Parça ismini buraya ekliyoruz -->
+                            <td class="py-2 px-4 border-b">{{ parca.kategori }}-{{ parca.get_tur_display }}</td>
+                            <td class="py-2 px-4 border-b">{{ parca.stok }}</td>
+                            <td class="py-2 px-4 border-b">
+                                <a href="{% url 'parca_guncelle' parca.id %}" class="text-blue-500 hover:text-blue-700">Düzenle</a>
+                                |
+                                <a href="{% url 'parca_sil' parca.id %}" class="text-red-500 hover:text-red-700">Sil</a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% endif %}
+
+        {% if can_edit_parts %}
+        <div class="text-center mt-6">
+            <a href="{% url 'parca_ekle' %}" class="bg-green-500 text-white p-2 rounded-md hover:bg-green-600 focus:outline-none">Yeni Parça Ekle</a>
+        </div>
+        {% endif %}
+
+        {% if not can_edit_parts %}
+        <!-- Diğer takımların parçaları -->
+        <div>
+            <h2 class="text-xl font-medium mb-4 text-gray-700">Diğer Takımların Parçaları</h2>
+            {% for takim, parcalar in kategorize_parcalar.items %}
+                <div class="mb-6">
+                    <h3 class="text-lg font-medium text-gray-700">Takım: {{ takim.isim }}</h3>
+                    <table class="min-w-full bg-white border border-gray-200">
+                        <thead>
+                            <tr>
+                                <th class="py-2 px-4 border-b text-left">Parça Adı</th>
+                                <th class="py-2 px-4 border-b text-left">Parça Kategorisi-Parça Türü</th>
+                                <th class="py-2 px-4 border-b text-left">Stok</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for parca in parcalar %}
+                                <tr>
+                                    <td class="py-2 px-4 border-b">{{ parca.isim }}</td>
+                                    <td class="py-2 px-4 border-b">{{ parca.kategori }}-{{ parca.get_tur_display }}</td>
+                                    <td class="py-2 px-4 border-b">{{ parca.stok }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <div class="text-center mt-6">
+            <a href="{% url 'logout' %}" class="bg-red-500 text-white p-2 rounded-md hover:bg-red-600 focus:outline-none">Çıkış Yap</a>
+        </div>
+    </div>
+</body>
+</html>

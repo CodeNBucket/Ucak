@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ is_ekle|yesno:"Takım Ekle,Takım Güncelle" }}</title>
+</head>
+<body>
+    <h1>{{ is_ekle|yesno:"Yeni Takım Ekle,Takım Güncelle" }}</h1>
+    <form method="post">
+        {% csrf_token %}
+        <label for="isim">İsim:</label>
+        <input type="text" id="isim" name="isim" value="{{ takim.isim|default:'' }}" required>
+        <br>
+        <label for="takim_tipi">Tip:</label>
+        <select id="takim_tipi" name="takim_tipi" required>
+            <option value="URETIM" {% if takim.takim_tipi == "URETIM" %}selected{% endif %}>Üretim</option>
+            <option value="MONTAJ" {% if takim.takim_tipi == "MONTAJ" %}selected{% endif %}>Montaj</option>
+        </select>
+        <br>
+        <button type="submit">{{ is_ekle|yesno:"Ekle,Güncelle" }}</button>
+    </form>
+</body>
+</html>

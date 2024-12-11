@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Uçak Montajı</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <script>
+        function filterPartsByCategory() {
+            const selectedCategory = document.getElementById('kategori').value; // Seçilen kategori
+            const allParts = document.querySelectorAll('.part-option'); // Tüm parça seçenekleri
+            allParts.forEach(part => {
+                const partCategory = part.getAttribute('data-category'); // Her parçanın kategorisi
+                const partRow = part.closest('.part-row'); // Satır öğesini al
+                if (partCategory === selectedCategory || selectedCategory === "") {
+                    partRow.classList.remove('hidden'); // Kategorisi eşleşen parçayı göster
+                } else {
+                    partRow.classList.add('hidden'); // Kategorisi eşleşmeyeni gizle
+                }
+            });
+        }
+    </script>
+</head>
+<body class="bg-gray-100 h-screen flex items-center justify-center">
+
+    <div class="bg-white p-8 rounded-lg shadow-md w-3/4">
+        <h2 class="text-2xl font-semibold text-center text-gray-800 mb-6">Yeni Uçak Montajı</h2>
+
+        <form method="POST" action="{% url 'ucak_ekle' %}" class="space-y-6">
+            {% csrf_token %}
+            
+            <!-- Uçak Seçimi -->
+            <div class="mb-4">
+                <label for="isim" class="block text-sm font-medium text-gray-700">Uçak İsmi:</label>
+                <input type="text" id="isim" name="isim" required class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
+            </div>
+
+            <!-- Uçak Kategorisi Seçimi -->
+            <div class="mb-4">
+                <label for="kategori" class="block text-sm font-medium text-gray-700">Uçak Kategorisi:</label>
+                <select id="kategori" name="kategori" required class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" onchange="filterPartsByCategory()">
+                    <option value="">Kategori Seçiniz</option>
+                    <option value="TB2">TB2</option>
+                    <option value="TB3">TB3</option>
+                    <option value="AKINCI">Akıncı</option>
+                    <option value="KIZILELMA">Kızıl Elma</option>
+                </select>
+            </div>
+
+            <!-- Parça Seçimi -->
+            <div class="mb-6">
+                <h3 class="text-xl font-medium text-gray-700 mb-4">Uçağa Takılacak Parçalar</h3>
+                
+                <!-- Parçaların listesi -->
+                {% for part in parts %}
+                    <div class="part-row mb-2 part-option" data-category="{{ part.kategori }}">
+                        <input type="checkbox" id="part_{{ part.id }}" name="parts" value="{{ part.id }}" class="mr-2" />
+                        <label for="part_{{ part.id }}" class="text-sm text-gray-700">{{ part.tur }} - {{ part.kategori }} (Stok: {{ part.stok }})</label>
+                    </div>
+                {% endfor %}
+            </div>
+
+            <!-- Kaydet Butonu -->
+            <div class="text-center">
+                <button type="submit" class="w-full bg-green-500 text-white p-2 rounded-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500">
+                    Uçak Montajını Tamamla
+                </button>
+            </div>
+        </form>
+    </div>
+
+</body>
+</html>
